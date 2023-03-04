@@ -33,3 +33,10 @@ Route::put('/post/{post}', [PostController::class, "actuallyUpdate"])->middlewar
 
 // Profile
 Route::get('/profile/{user:username}', [UserController::class, "profile"])->middleware('mustBeLoggedIn');
+Route::get('/manage-avatar', [UserController::class, "showAvatarForm"]);
+Route::post('/manage-avatar', [UserController::class, "storeAvatar"]);
+
+// Admin olny
+Route::get('admins-only', function() {
+    return 'Only admin should be able to see this page.';
+})->middleware('can:visitAdminPages');

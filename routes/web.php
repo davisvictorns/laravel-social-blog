@@ -33,8 +33,8 @@ Route::put('/post/{post}', [PostController::class, "actuallyUpdate"])->middlewar
 
 // Profile
 Route::get('/profile/{user:username}', [UserController::class, "profile"])->middleware('mustBeLoggedIn');
-Route::get('/manage-avatar', [UserController::class, "showAvatarForm"]);
-Route::post('/manage-avatar', [UserController::class, "storeAvatar"]);
+Route::get('/manage-avatar', [UserController::class, "showAvatarForm"])->middleware('mustBeLoggedIn');
+Route::post('/manage-avatar', [UserController::class, "storeAvatar"])->middleware('mustBeLoggedIn');
 
 // Admin olny
 Route::get('admins-only', function() {

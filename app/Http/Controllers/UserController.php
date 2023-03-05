@@ -6,6 +6,7 @@ use App\Models\User;
 use App\Models\Follow;
 use Illuminate\Http\Request;
 use Illuminate\Validation\Rule;
+use Illuminate\Support\Facades\View;
 use Intervention\Image\Facades\Image;
 use Illuminate\Support\Facades\Storage;
 
@@ -55,20 +56,34 @@ class UserController extends Controller
         }
     }
 
-    public function profile(User $user) {
+    private function getSharedData($user) {
         $currentlyFollowing = 0;
 
         if(auth()->check()){
             $currentlyFollowing = Follow::where([['user_id', auth()->user()->id], ['followeduser', $user->id]])->count();
         }
 
-        return view('profile-posts', [
+        View::share('sharedData', [
             'username' => $user->username,
             'avatar' => $user->avatar,            
             'currentlyFollowing' => $currentlyFollowing,
-            'posts' => $user->posts()->latest()->get(),
             'postCount' => $user->posts()->count()
         ]);
+    }
+
+    public function profile(User $user) {
+        $this->getSharedData($user);
+        return view('profile-posts', ['posts' => $user->posts()->latest()->get()]);
+    }
+
+    public function profileFollowers(User $user) {
+        $this->getSharedData($user);
+        return view('profile-followers', ['posts' => $user->posts()->latest()->get()]);
+    }
+
+    public function profileFollowing(User $user) {
+        $this->getSharedData($user);
+        return view('profile-following', ['posts' => $user->posts()->latest()->get()]);
     }
 
     public function showAvatarForm() {

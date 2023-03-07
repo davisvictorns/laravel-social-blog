@@ -54,4 +54,10 @@ class PostController extends Controller
 
         return back()->with('success', 'Post edited successfully!');
     }
+
+    public function search($term) {
+        $posts = Post::search($term)->get();
+        $posts->load('user:id,username,avatar');
+        return $posts;
+    }
 }
